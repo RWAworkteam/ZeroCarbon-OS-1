@@ -217,7 +217,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
                 <h4 className="text-2xl font-bold text-slate-900 mb-4">3. 碳资产与区块链层 (Core)</h4>
                 <p className="text-slate-600 mb-6 max-w-md">
                   部署园区级联盟链（业务链），将项目审定、资产生成、冻结注销等关键事件上链存证，形成不可篡改的共同账本。
-                  支持碳资产通证化、碳普惠交易对接、碳资产质押管理等核心功能。智能合约自动执行碳资产发行、交易结算、积分兑付等逻辑。
+                  支持碳资产数证化、碳普惠交易对接、碳资产质押管理等核心功能。智能合约自动执行碳资产发行、交易结算、积分兑付等逻辑。
                 </p>
                 <div className="space-y-3">
                    <div className="flex items-center text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100 w-fit">

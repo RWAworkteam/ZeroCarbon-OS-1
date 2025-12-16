@@ -129,8 +129,9 @@ const CarbonAccounts: React.FC<CarbonAccountsProps> = ({ assets, enterprises, on
             </p>
             <p className="text-sm text-slate-700 leading-relaxed mb-2">
               <strong>碳资产项目库：</strong>管理园区内各类碳资产项目（如光伏、储能、节能改造等），支持项目立项、审核、上链数证化等全流程管理。
-              碳资产管理流程涵盖：①碳资产登记 → ②审核与确权 → ③通证化上链 → ④碳资产评估 → ⑤内部转移与交易 → ⑥碳资产清退与注销。
+              碳资产管理流程涵盖：①碳资产登记 → ②审核与确权 → ③数证化上链 → ④碳资产评估 → ⑤内部转移与交易（待政策突破）→ ⑥碳资产清退与注销。
               已上链的碳资产可作为数字资产进行交易、抵押等金融操作。
+              <span className="text-amber-600 font-semibold">注：园区内企业间的碳配额/资产内部交易（OTC）需等待相关政策突破，当前仅作为辅助管理工具，不影响企业在国家碳市场的合规履约。</span>
             </p>
             <p className="text-sm text-slate-700 leading-relaxed">
               <strong>碳积分与激励模块：</strong>管理园区内的碳普惠积分（如居民或员工通过绿色行为获得的碳积分）。

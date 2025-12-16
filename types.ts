@@ -63,6 +63,8 @@ export interface ActiveLoan {
   status: string;
   settlementChannel: string;
   createDate: string;
+  park?: string; // 园区
+  project?: string; // 项目
 }
 
 export interface TradeRecord {

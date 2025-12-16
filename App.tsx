@@ -41,6 +41,13 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+
+  // Clear URL hash when entering management system
+  useEffect(() => {
+    if (!showLanding && window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [showLanding]);
   
   // Mock notifications
   const [notifications] = useState([
@@ -374,43 +381,60 @@ const App: React.FC = () => {
   ];
 
   const renderContent = () => {
-    switch (currentView) {
-      case 'dashboard': 
-        return <Dashboard />;
-      case 'assets': 
-        return <CarbonAccounts 
-          assets={assets}
-          enterprises={enterprises}
-          onAddAsset={handleAddAsset} 
-          onMint={handleMintAsset}
-          onAddEnterprise={handleAddEnterprise}
-        />;
-      case 'trading': 
-        return <TradingMarket 
-          assets={assets} 
-          trades={tradeHistory}
-          onCreateTrade={handleCreateTrade} 
-        />;
-      case 'blockchain': 
-        return <BlockchainView blocks={blocks} />;
-      case 'finance': 
-        return <GreenFinance 
-          assets={assets} 
-          balance={walletBalance} 
-          logs={contractLogs} 
-          loans={activeLoans}
-          onPledge={handleCreateLoan}
-          onSimulateScenario={handleSimulateContract}
-        />;
-      case 'points':
-        return <CarbonPoints
-          accounts={pointsAccounts}
-          transactions={pointsTransactions}
-          rewards={pointsRewards}
-          onRedeem={handleRedeemPoints}
-          onRefreshPoints={handleRefreshPoints}
-        />;
-      default: return <Dashboard />;
+    try {
+      switch (currentView) {
+        case 'dashboard': 
+          return <Dashboard />;
+        case 'assets': 
+          return <CarbonAccounts 
+            assets={assets}
+            enterprises={enterprises}
+            onAddAsset={handleAddAsset} 
+            onMint={handleMintAsset}
+            onAddEnterprise={handleAddEnterprise}
+          />;
+        case 'trading': 
+          return <TradingMarket 
+            assets={assets} 
+            trades={tradeHistory}
+            onCreateTrade={handleCreateTrade} 
+          />;
+        case 'blockchain': 
+          return <BlockchainView blocks={blocks} />;
+        case 'finance': 
+          console.log('Rendering GreenFinance component...', { assets: assets.length, balance: walletBalance, logs: contractLogs.length, loans: activeLoans.length });
+          return <GreenFinance 
+            assets={assets} 
+            balance={walletBalance} 
+            logs={contractLogs} 
+            loans={activeLoans}
+            onPledge={handleCreateLoan}
+            onSimulateScenario={handleSimulateContract}
+          />;
+        case 'points':
+          return <CarbonPoints
+            accounts={pointsAccounts}
+            transactions={pointsTransactions}
+            rewards={pointsRewards}
+            onRedeem={handleRedeemPoints}
+            onRefreshPoints={handleRefreshPoints}
+          />;
+        default: return <Dashboard />;
+      }
+    } catch (error) {
+      console.error('Error rendering content:', error);
+      return (
+        <div className="p-8 bg-red-50 border border-red-200 rounded-xl">
+          <h2 className="text-xl font-bold text-red-800 mb-2">渲染错误</h2>
+          <p className="text-red-600 mb-4">{error instanceof Error ? error.message : String(error)}</p>
+          <button 
+            onClick={() => setCurrentView('dashboard')}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            返回总览
+          </button>
+        </div>
+      );
     }
   };
 
@@ -471,11 +495,24 @@ const App: React.FC = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => {
-                  setCurrentView(item.id as View);
-                  setIsSidebarOpen(false);
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('Navigating to:', item.id, 'Current view:', currentView);
+                  try {
+                    setCurrentView(item.id as View);
+                    setIsSidebarOpen(false);
+                    // Clear any URL hash
+                    if (window.location.hash) {
+                      window.history.replaceState(null, '', window.location.pathname);
+                    }
+                    console.log('Navigation successful, new view:', item.id);
+                  } catch (error) {
+                    console.error('Navigation error:', error);
+                  }
                 }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer
                   ${isActive 
                     ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg' 
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'

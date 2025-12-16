@@ -284,6 +284,57 @@ const TradingMarket: React.FC<TradingMarketProps> = ({ assets, trades, onCreateT
         </div>
       </div>
       
+      {/* 园区内部交易（待政策突破） */}
+      <div className="bg-white rounded-xl border-2 border-amber-200 shadow-sm p-6 relative">
+        <div className="absolute top-3 right-3">
+          <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-semibold border border-amber-300">
+            待政策突破
+          </span>
+        </div>
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <Activity size={20} className="text-indigo-600" />
+            <div>
+              <h3 className="font-bold text-slate-800 text-lg">园区内部交易（OTC）</h3>
+              <p className="text-xs text-slate-500">企业间碳配额/资产内部流转（待政策突破）</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+          <p className="text-sm text-amber-800 leading-relaxed">
+            <strong>说明：</strong>园区内企业间根据自愿原则转让碳资产余额的内部交易功能。
+            此功能仅作为园区碳资产平衡和激励手段，<strong className="text-amber-900">不替代企业在国家碳市场的合规履约</strong>。
+            实际履约仍需企业按照官方要求上交配额。此功能需等待相关政策突破后正式启用。
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="border border-slate-200 rounded-lg p-4">
+            <h4 className="font-semibold text-slate-900 mb-2">内部交易流程</h4>
+            <ol className="text-sm text-slate-600 space-y-1 list-decimal list-inside">
+              <li>有余量配额的企业挂牌出售</li>
+              <li>缺额企业出价购买</li>
+              <li>双方在平台上达成意向</li>
+              <li>通过链上交易合约完成点对点转移</li>
+              <li>数字人民币同步结算（DVP）</li>
+            </ol>
+          </div>
+          <div className="border border-slate-200 rounded-lg p-4">
+            <h4 className="font-semibold text-slate-900 mb-2">交易特点</h4>
+            <ul className="text-sm text-slate-600 space-y-1">
+              <li>✓ 透明、高效，降低撮合成本</li>
+              <li>✓ 区块链记录，可追溯可审计</li>
+              <li>✓ 仅用于园区内部资产平衡</li>
+              <li>⚠️ 不影响官方市场合规履约</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+          <p className="text-xs text-slate-500">
+            <strong>当前状态：</strong>功能已开发完成，等待相关政策支持后启用。企业可通过此功能提前规划碳资产盈缺。
+          </p>
+        </div>
+      </div>
+
       {/* 碳普惠资产池管理 */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">

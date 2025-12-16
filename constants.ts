@@ -78,7 +78,24 @@ export const MOCK_ACTIVE_LOANS: ActiveLoan[] = [
     ltvPercent: 65,
     status: '正常',
     settlementChannel: 'e-CNY（上海数币国际平台）',
-    createDate: '2024-04-01'
+    createDate: '2024-04-01',
+    park: '零碳园区A区',
+    project: '一期屋顶光伏电站'
+  },
+  {
+    id: 'L-495996',
+    tokenId: 'T-882911',
+    tokenName: '一期屋顶光伏电站 碳资产数证',
+    principal: 80000,
+    currency: 'CNY',
+    rate: 3.85,
+    tenor: 12,
+    ltvPercent: 14,
+    status: '正常',
+    settlementChannel: 'e-CNY（上海数币国际平台）',
+    createDate: '2025-12-16',
+    park: '零碳园区A区',
+    project: '一期屋顶光伏电站'
   }
 ];
 

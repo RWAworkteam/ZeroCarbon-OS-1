@@ -1,0 +1,25 @@
+==========================================
+ECS 部署文件上传说明
+==========================================
+
+文件已准备好：
+1. zerocarbon-os-dist.tgz (209KB) - 网站打包文件
+2. fix-ecs.sh - 自动部署脚本
+
+由于 SSH 连接需要先绑定密钥对，建议使用以下方式：
+
+【推荐】通过阿里云控制台 Web 终端部署：
+
+1. 登录阿里云控制台
+2. 进入 ECS 实例页面
+3. 点击"远程连接" → "Workbench远程连接"
+4. 在 Web 终端中执行部署命令（见 DEPLOY-ECS-详细步骤.md）
+
+或者：
+
+1. 在控制台绑定密钥对 "chaozhe" 到实例
+2. 等待实例重启
+3. 然后我可以帮你通过 SSH 自动部署
+
+当前文件位置：
+/Users/zhangchaozhe/Documents/hk/RWA/project2/zerocarbon-os 1/zerocarbon-os-dist.tgz
