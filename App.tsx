@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { 
   LayoutDashboard, 
   WalletCards, 
@@ -16,15 +16,17 @@ import {
   Info,
   Gift
 } from 'lucide-react';
-import Dashboard from './components/Dashboard';
-import CarbonAccounts from './components/CarbonAccounts';
-import BlockchainView from './components/BlockchainView';
-import GreenFinance from './components/GreenFinance';
-import TradingMarket from './components/TradingMarket';
-import LandingPage from './components/LandingPage';
-import UserProfile from './components/UserProfile';
-import CarbonPoints from './components/CarbonPoints';
-import Login from './components/Login';
+
+// Lazy load components for code splitting
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const CarbonAccounts = lazy(() => import('./components/CarbonAccounts'));
+const BlockchainView = lazy(() => import('./components/BlockchainView'));
+const GreenFinance = lazy(() => import('./components/GreenFinance'));
+const TradingMarket = lazy(() => import('./components/TradingMarket'));
+const LandingPage = lazy(() => import('./components/LandingPage'));
+const UserProfile = lazy(() => import('./components/UserProfile'));
+const CarbonPoints = lazy(() => import('./components/CarbonPoints'));
+const Login = lazy(() => import('./components/Login'));
 import { MOCK_ASSETS, MOCK_BLOCKS, SMART_CONTRACT_LOGS, MOCK_ACTIVE_LOANS, MOCK_TRADES, MOCK_ENTERPRISES, MOCK_POINTS_ACCOUNTS, MOCK_POINTS_TRANSACTIONS, MOCK_POINTS_REWARDS } from './constants';
 import { AssetStatus, BlockData, CarbonAsset, SmartContractLog, ActiveLoan, TradeRecord, Enterprise, ComplianceStatus, CarbonPointsAccount, CarbonPointsTransaction, PointsReward } from './types';
 
@@ -388,42 +390,71 @@ const App: React.FC = () => {
     try {
       switch (currentView) {
         case 'dashboard': 
-          return <Dashboard />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <Dashboard />
+            </Suspense>
+          );
         case 'assets': 
-          return <CarbonAccounts 
-            assets={assets}
-            enterprises={enterprises}
-            onAddAsset={handleAddAsset} 
-            onMint={handleMintAsset}
-            onAddEnterprise={handleAddEnterprise}
-          />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <CarbonAccounts 
+                assets={assets}
+                enterprises={enterprises}
+                onAddAsset={handleAddAsset} 
+                onMint={handleMintAsset}
+                onAddEnterprise={handleAddEnterprise}
+              />
+            </Suspense>
+          );
         case 'trading': 
-          return <TradingMarket 
-            assets={assets} 
-            trades={tradeHistory}
-            onCreateTrade={handleCreateTrade} 
-          />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <TradingMarket 
+                assets={assets} 
+                trades={tradeHistory}
+                onCreateTrade={handleCreateTrade} 
+              />
+            </Suspense>
+          );
         case 'blockchain': 
-          return <BlockchainView blocks={blocks} />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <BlockchainView blocks={blocks} />
+            </Suspense>
+          );
         case 'finance': 
           console.log('Rendering GreenFinance component...', { assets: assets.length, balance: walletBalance, logs: contractLogs.length, loans: activeLoans.length });
-          return <GreenFinance 
-            assets={assets} 
-            balance={walletBalance} 
-            logs={contractLogs} 
-            loans={activeLoans}
-            onPledge={handleCreateLoan}
-            onSimulateScenario={handleSimulateContract}
-          />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <GreenFinance 
+                assets={assets} 
+                balance={walletBalance} 
+                logs={contractLogs} 
+                loans={activeLoans}
+                onPledge={handleCreateLoan}
+                onSimulateScenario={handleSimulateContract}
+              />
+            </Suspense>
+          );
         case 'points':
-          return <CarbonPoints
-            accounts={pointsAccounts}
-            transactions={pointsTransactions}
-            rewards={pointsRewards}
-            onRedeem={handleRedeemPoints}
-            onRefreshPoints={handleRefreshPoints}
-          />;
-        default: return <Dashboard />;
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <CarbonPoints
+                accounts={pointsAccounts}
+                transactions={pointsTransactions}
+                rewards={pointsRewards}
+                onRedeem={handleRedeemPoints}
+                onRefreshPoints={handleRefreshPoints}
+              />
+            </Suspense>
+          );
+        default: 
+          return (
+            <Suspense fallback={<LoadingFallback />}>
+              <Dashboard />
+            </Suspense>
+          );
       }
     } catch (error) {
       console.error('Error rendering content:', error);
@@ -442,6 +473,13 @@ const App: React.FC = () => {
     }
   };
 
+  // Loading fallback component
+  const LoadingFallback = () => (
+    <div className="flex items-center justify-center h-screen">
+      <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+
   // Handle login
   const handleLogin = (username: string) => {
     setCurrentUser(username);
@@ -459,20 +497,28 @@ const App: React.FC = () => {
   };
 
   if (showLanding) {
-    return <LandingPage onEnter={() => {
-      setShowLanding(false);
-      setShowLogin(true);
-    }} />;
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <LandingPage onEnter={() => {
+          setShowLanding(false);
+          setShowLogin(true);
+        }} />
+      </Suspense>
+    );
   }
 
   if (showLogin && !isLoggedIn) {
-    return <Login 
-      onLogin={handleLogin} 
-      onBack={() => {
-        setShowLogin(false);
-        setShowLanding(true);
-      }} 
-    />;
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <Login 
+          onLogin={handleLogin} 
+          onBack={() => {
+            setShowLogin(false);
+            setShowLanding(true);
+          }} 
+        />
+      </Suspense>
+    );
   }
 
   if (!isLoggedIn) {
@@ -687,7 +733,9 @@ const App: React.FC = () => {
 
       {/* User Profile Modal */}
       {showUserProfile && (
-        <UserProfile onClose={() => setShowUserProfile(false)} />
+        <Suspense fallback={<LoadingFallback />}>
+          <UserProfile onClose={() => setShowUserProfile(false)} />
+        </Suspense>
       )}
     </div>
   );

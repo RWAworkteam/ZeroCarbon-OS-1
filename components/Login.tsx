@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { api, setAuthToken } from '../api';
 
 interface LoginProps {
   onLogin: (username: string) => void;
@@ -24,16 +25,29 @@ const Login: React.FC<LoginProps> = ({ onLogin, onBack }) => {
 
     setIsLoading(true);
     
-    // Simulate login API call
-    setTimeout(() => {
-      // Simple validation - accept any non-empty credentials for demo
+    try {
+      // Call login API
+      const response = await api.auth.login({ username, password });
+      
+      if (response.code === 200 && response.data) {
+        // Save token
+        setAuthToken(response.data.token);
+        // Call onLogin with username
+        onLogin(response.data.user.name || username);
+      } else {
+        setError(response.message || '登录失败，请检查用户名和密码');
+      }
+    } catch (err: any) {
+      // Fallback to demo mode if API is not available
+      console.warn('API call failed, using demo mode:', err);
       if (username.trim() && password.trim()) {
         onLogin(username);
       } else {
-        setError('用户名或密码错误');
-        setIsLoading(false);
+        setError(err.message || '用户名或密码错误');
       }
-    }, 500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
