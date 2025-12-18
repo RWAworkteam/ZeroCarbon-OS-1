@@ -24,6 +24,7 @@ import TradingMarket from './components/TradingMarket';
 import LandingPage from './components/LandingPage';
 import UserProfile from './components/UserProfile';
 import CarbonPoints from './components/CarbonPoints';
+import Login from './components/Login';
 import { MOCK_ASSETS, MOCK_BLOCKS, SMART_CONTRACT_LOGS, MOCK_ACTIVE_LOANS, MOCK_TRADES, MOCK_ENTERPRISES, MOCK_POINTS_ACCOUNTS, MOCK_POINTS_TRANSACTIONS, MOCK_POINTS_REWARDS } from './constants';
 import { AssetStatus, BlockData, CarbonAsset, SmartContractLog, ActiveLoan, TradeRecord, Enterprise, ComplianceStatus, CarbonPointsAccount, CarbonPointsTransaction, PointsReward } from './types';
 
@@ -37,6 +38,9 @@ interface Toast {
 
 const App: React.FC = () => {
   const [showLanding, setShowLanding] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string>('');
   const [currentView, setCurrentView] = useState<View>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -438,11 +442,41 @@ const App: React.FC = () => {
     }
   };
 
+  // Handle login
+  const handleLogin = (username: string) => {
+    setCurrentUser(username);
+    setIsLoggedIn(true);
+    setShowLogin(false);
+    setShowLanding(false);
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser('');
+    setShowLanding(true);
+    setShowLogin(false);
+  };
+
   if (showLanding) {
     return <LandingPage onEnter={() => {
-      console.log('Entering management system...');
       setShowLanding(false);
+      setShowLogin(true);
     }} />;
+  }
+
+  if (showLogin && !isLoggedIn) {
+    return <Login 
+      onLogin={handleLogin} 
+      onBack={() => {
+        setShowLogin(false);
+        setShowLanding(true);
+      }} 
+    />;
+  }
+
+  if (!isLoggedIn) {
+    return null;
   }
 
   return (
@@ -475,7 +509,7 @@ const App: React.FC = () => {
         fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-center h-16 border-b border-slate-800 cursor-pointer" onClick={() => setShowLanding(true)}>
+        <div className="flex items-center justify-center h-16 border-b border-slate-800 cursor-pointer" onClick={() => setCurrentView('dashboard')}>
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
               <span className="font-bold text-white text-lg">Z</span>
@@ -527,7 +561,7 @@ const App: React.FC = () => {
 
         <div className="absolute bottom-0 w-full p-4 border-t border-slate-800">
            <button 
-             onClick={() => setShowLanding(true)}
+             onClick={handleLogout}
              className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors mb-2"
            >
               <LogOut size={20} />
@@ -632,11 +666,11 @@ const App: React.FC = () => {
                 className="flex items-center space-x-3 pl-4 border-l border-slate-200 hover:bg-slate-50 rounded-lg px-2 py-1 transition-colors"
               >
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-slate-900">管理员</p>
+                  <p className="text-sm font-medium text-slate-900">{currentUser || '管理员'}</p>
                   <p className="text-xs text-slate-500">园区运营部</p>
                 </div>
                 <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold hover:bg-indigo-200 transition-colors">
-                  ZH
+                  {currentUser ? currentUser.charAt(0).toUpperCase() : 'ZH'}
                 </div>
               </button>
             </div>
