@@ -17,7 +17,7 @@ export default defineConfig({
             if (id.includes('lucide-react')) {
               return 'lucide-vendor';
             }
-            // React and react-dom must be together
+            // React and react-dom must be together and loaded first
             if (id.includes('react') || id.includes('react-dom')) {
               // Exclude lucide-react from react-vendor
               if (!id.includes('lucide')) {
@@ -37,6 +37,15 @@ export default defineConfig({
               return `component-${componentName}`;
             }
           }
+        },
+        // Ensure React is loaded before other chunks
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: (chunkInfo) => {
+          // Ensure react-vendor loads first
+          if (chunkInfo.name === 'react-vendor') {
+            return 'assets/react-vendor-[hash].js';
+          }
+          return 'assets/[name]-[hash].js';
         },
       },
     },
