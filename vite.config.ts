@@ -11,13 +11,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // Vendor chunks
+          // Vendor chunks - ensure lucide-react is in a single chunk
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
-            }
+            // Check lucide-react first, before react
             if (id.includes('lucide-react')) {
               return 'lucide-vendor';
+            }
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
             }
             if (id.includes('recharts')) {
               return 'recharts-vendor';
@@ -35,5 +36,8 @@ export default defineConfig({
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: ['lucide-react'],
   },
 });
