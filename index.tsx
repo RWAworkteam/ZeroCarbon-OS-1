@@ -1,4 +1,11 @@
+// Import React first to ensure it's fully initialized
 import React from 'react';
+
+// Wait for React to be fully ready
+if (typeof React === 'undefined' || !React.createElement) {
+  throw new Error('React is not properly loaded');
+}
+
 import ReactDOM from 'react-dom/client';
 import App from './App';
 

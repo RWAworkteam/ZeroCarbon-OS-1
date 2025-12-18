@@ -17,12 +17,12 @@ export default defineConfig({
             if (id.includes('lucide-react')) {
               return 'lucide-vendor';
             }
-            // React and react-dom must be together and loaded first
-            if (id.includes('react') || id.includes('react-dom')) {
-              // Exclude lucide-react from react-vendor
-              if (!id.includes('lucide')) {
-                return 'react-vendor';
-              }
+            // React and react-dom must be together - don't split them
+            if (id.includes('react/') || id.includes('react-dom/') || 
+                id === 'node_modules/react/index.js' || 
+                id === 'node_modules/react-dom/index.js' ||
+                (id.includes('react') && !id.includes('lucide') && !id.includes('recharts'))) {
+              return 'react-vendor';
             }
             if (id.includes('recharts')) {
               return 'recharts-vendor';
@@ -38,12 +38,16 @@ export default defineConfig({
             }
           }
         },
-        // Ensure React is loaded before other chunks
+        // Ensure proper chunk loading order
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: (chunkInfo) => {
-          // Ensure react-vendor loads first
-          if (chunkInfo.name === 'react-vendor') {
-            return 'assets/react-vendor-[hash].js';
+          // Prioritize react-vendor to load first
+          const chunkName = chunkInfo.name || '';
+          if (chunkName === 'react-vendor') {
+            return 'assets/00-react-vendor-[hash].js';
+          }
+          if (chunkName === 'lucide-vendor') {
+            return 'assets/01-lucide-vendor-[hash].js';
           }
           return 'assets/[name]-[hash].js';
         },
@@ -51,7 +55,8 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['lucide-react', 'react', 'react-dom'],
+    include: ['react', 'react-dom', 'lucide-react'],
+    force: true,
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
